@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Pedometer } from "expo-sensors";
+import Svg, { Circle } from 'react-native-svg'
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
     const [isAvailable, setIsAvailable] = useState(null);
+    const [goal, setGoal] = useState(200);
 
     useEffect(() => {
         Pedometer.isAvailableAsync()
@@ -16,12 +18,46 @@ export default function StepCounter() {
         return () => subscription.remove();
     }, []);
 
+    const radius = 150;
+    const strokeWidth = 10;
+    const circumference = 2 * Math.PI * radius;
+    const progress = Math.min(steps / goal, 1);
+    const strokeDashoffset = circumference - circumference * progress;
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>{isAvailable}</Text>
-            <View style={styles.stepsCircleOutline}>
-                <Text style={styles.currentStepsAmount}>{steps}</Text>
-                <Text style={styles.note}>of 10 000</Text>
+            <View style={styles.counterContainer}>
+                <Svg width={radius * 2} height={radius * 2}>
+                    <Circle
+                        stroke="#5599ff55"
+                        fill="none"
+                        cx={radius}
+                        cy={radius}
+                        r={radius - strokeWidth / 2}
+                        strokeWidth={2}
+                        strokeDasharray="6,6"
+                    />
+
+                    <Circle
+                        stroke="#5599ff"
+                        fill="none"
+                        cx={radius}
+                        cy={radius}
+                        r={radius - strokeWidth / 2}
+                        strokeWidth={strokeWidth}
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                        rotation="-90"
+                        originX={radius}
+                        originY={radius}
+                    />
+                </Svg>
+
+                <View style={styles.centerText}>
+                    <Text style={styles.currentStepsAmount}>{steps}</Text>
+                    <Text style={styles.note}>of {goal.toLocaleString()}</Text>
+                </View>
             </View>
         </View>
     );
@@ -31,8 +67,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20 },
     title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
     text: { fontSize: 18, marginVertical: 4 },
-    steps: { fontSize: 40, color: "green", marginTop: 20 },
-    note: { marginTop: 10, color: "gray", textAlign: "center" },
-    currentStepsAmount: { fontSize: 48, fontWeight: "bold" },
-    stepsCircleOutline: { marginTop: 30, width: 200, height: 200, borderColor: '#5599ffff', borderWidth: 2, borderRadius: 150, display: "flex", justifyContent: "center", alignItems: "center", borderStyle: "dashed" }
+    currentStepsAmount: { fontSize: 64, fontWeight: "bold", color: "#333" },
+    counterContainer: { position: "relative", display: "flex", justifyContent: "center", alignItems: "center" },
+    centerText: { position: 'absolute', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }
 });
