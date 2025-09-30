@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Pedometer } from "expo-sensors";
-import Svg, { Circle } from 'react-native-svg'
+import Svg, { Circle } from 'react-native-svg';
+import { Pause, Play } from "lucide-react-native";
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
     const [isAvailable, setIsAvailable] = useState(null);
     const [goal, setGoal] = useState(200);
+    const [isPaused, setIsPaused] = useState(false);
+    const [subscription, setSubscription] = useState(null);
+    const [accumulatedSteps, setAccumulatedSteps] = useState(0);
 
+    //checking whether pedometer is available
     useEffect(() => {
         Pedometer.isAvailableAsync()
             .then((result) => setIsAvailable(result ? "Steps sensor available ✅" : "Steps sensor unavailable ❌"))
             .catch(() => setIsAvailable("Помилка ❌"));
-        const subscription = Pedometer.watchStepCount((result) => {
-            setSteps(result.steps);
-        });
-        return () => subscription.remove();
     }, []);
+
+    //subscription to steps watching
+    useEffect(() => {
+        if (!isPaused) {
+            const sub = Pedometer.watchStepCount((result) => {
+                setSteps(accumulatedSteps + result.steps);
+            });
+            setSubscription(sub);
+
+            return () => sub.remove();
+        } else if (subscription) {
+            subscription.remove();
+            setSubscription(null);
+            setAccumulatedSteps(steps);
+        }
+    }, [isPaused])
 
     const radius = 150;
     const strokeWidth = 10;
@@ -67,6 +84,16 @@ export default function StepCounter() {
                     <Text style={styles.note}>of {goal.toLocaleString()}</Text>
                 </View>
             </View>
+            <TouchableOpacity
+                style={styles.pauseBtn}
+                onPress={() => setIsPaused(!isPaused)}
+            >
+                {isPaused ? <Play color="#333" strokeWidth={1} /> : <Pause color="#333" strokeWidth={1} />}
+                <Text style={{ marginLeft: 12, color: '#333', fontSize: 22, fontWeight: '600' }}>
+                    {isPaused ? 'RESUME' : 'PAUSE'}
+                </Text>
+            </TouchableOpacity>
+
         </View>
     );
 }
@@ -80,5 +107,6 @@ const styles = StyleSheet.create({
     centerText: { position: 'absolute', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' },
     burger: { width: 30, height: 22, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
     row: { width: '100%', height: 3.5, backgroundColor: '#228be6', borderRadius: 2 },
-    header: { width: '100%', height: 30, display: "flex", justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 70 }
+    header: { width: '100%', height: 30, display: "flex", justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 70 },
+    pauseBtn: { width: 160, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: '#4dabf7', borderRadius: 12, marginTop: 20 }
 });
