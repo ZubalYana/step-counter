@@ -26,6 +26,14 @@ export default function StepCounter() {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <Text>Some Logo</Text>
+                <View style={styles.burger}>
+                    <View style={styles.row}></View>
+                    <View style={styles.row}></View>
+                    <View style={styles.row}></View>
+                </View>
+            </View>
             <View style={styles.counterContainer}>
                 <Svg width={radius * 2} height={radius * 2}>
                     <Circle
@@ -64,10 +72,13 @@ export default function StepCounter() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20 },
+    container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20, position: 'relative' },
     title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
     text: { fontSize: 18, marginVertical: 4 },
     currentStepsAmount: { fontSize: 64, fontWeight: "bold", color: "#333" },
     counterContainer: { position: "relative", display: "flex", justifyContent: "center", alignItems: "center" },
-    centerText: { position: 'absolute', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }
+    centerText: { position: 'absolute', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+    burger: { width: 30, height: 22, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
+    row: { width: '100%', height: 3.5, backgroundColor: '#228be6', borderRadius: 2 },
+    header: { width: '100%', height: 30, display: "flex", justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 70 }
 });
