@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Pedometer } from "expo-sensors";
 import Svg, { Circle } from 'react-native-svg';
 import { Pause, Play } from "lucide-react-native";
+import Logo from "./Logo";
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
@@ -35,8 +36,8 @@ export default function StepCounter() {
         }
     }, [isPaused])
 
-    const radius = 150;
-    const strokeWidth = 10;
+    const radius = 140;
+    const strokeWidth = 15;
     const circumference = 2 * Math.PI * radius;
     const progress = Math.min(steps / goal, 1);
     const strokeDashoffset = circumference - circumference * progress;
@@ -44,7 +45,7 @@ export default function StepCounter() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text>Some Logo</Text>
+                <Logo />
                 <View style={styles.burger}>
                     <View style={styles.row}></View>
                     <View style={styles.row}></View>
@@ -88,7 +89,7 @@ export default function StepCounter() {
                 style={styles.pauseBtn}
                 onPress={() => setIsPaused(!isPaused)}
             >
-                {isPaused ? <Play color="#333" strokeWidth={1} /> : <Pause color="#333" strokeWidth={1} />}
+                {isPaused ? <Play color="#333" strokeWidth={1} fill='#333' /> : <Pause color="#333" strokeWidth={1} fill='#333' />}
                 <Text style={{ marginLeft: 12, color: '#333', fontSize: 22, fontWeight: '600' }}>
                     {isPaused ? 'RESUME' : 'PAUSE'}
                 </Text>
@@ -108,5 +109,5 @@ const styles = StyleSheet.create({
     burger: { width: 30, height: 22, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
     row: { width: '100%', height: 3.5, backgroundColor: '#228be6', borderRadius: 2 },
     header: { width: '100%', height: 30, display: "flex", justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 70 },
-    pauseBtn: { width: 160, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: '#4dabf7', borderRadius: 12, marginTop: 20 }
+    pauseBtn: { width: 160, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: '#4dabf7', borderRadius: 12, marginTop: 25 }
 });
