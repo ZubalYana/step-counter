@@ -23,6 +23,7 @@ export default function SideModal({ visible, setVisible }) {
         }).start();
     }, [visible]);
 
+
     return (
         <>
             {visible && (
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     sideMenu: {
         position: "absolute",
         top: 0,
-        right: -78,
+        right: 0,
         height: "100%",
         width: width * 0.75,
         backgroundColor: "#fff",

@@ -10,8 +10,6 @@ import {
 import { Pedometer } from "expo-sensors";
 import Svg, { Circle } from "react-native-svg";
 import { Pause, Play } from "lucide-react-native";
-import Logo from "./Logo";
-import Header from "./Header";
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
@@ -54,7 +52,6 @@ export default function StepCounter() {
 
     return (
         <View style={styles.container}>
-            <Header />
             <View style={styles.counterContainer}>
                 <Svg width={radius * 2} height={radius * 2}>
                     <Circle

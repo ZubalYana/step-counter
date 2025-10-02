@@ -1,32 +1,17 @@
-import { useState, useRef } from 'react'
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Animated,
-    Dimensions
-} from "react-native";
+import React from 'react';
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Logo from "./Logo";
-import SideModal from "./SideModal";
-const { width } = Dimensions.get("window");
 
-
-export default function Header() {
-    const [visible, setVisible] = useState(false);
-    const slideAnim = useRef(new Animated.Value(width)).current;
+export default function Header({ setVisible }) {
     return (
-        <>
-            <View style={styles.header}>
-                <Logo />
-                <TouchableOpacity style={styles.burger} onPress={() => setVisible(true)}>
-                    <View style={styles.row}></View>
-                    <View style={styles.row}></View>
-                    <View style={styles.row}></View>
-                </TouchableOpacity>
-            </View>
-            <SideModal visible={visible} setVisible={setVisible} />
-        </>
+        <View style={styles.header}>
+            <Logo />
+            <TouchableOpacity style={styles.burger} onPress={() => setVisible(true)}>
+                <View style={styles.row}></View>
+                <View style={styles.row}></View>
+                <View style={styles.row}></View>
+            </TouchableOpacity>
+        </View>
     )
 }
 
@@ -43,4 +28,4 @@ const styles = StyleSheet.create({
         top: 70,
         paddingHorizontal: 20,
     },
-})
+});
