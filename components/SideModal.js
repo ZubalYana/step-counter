@@ -18,7 +18,7 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
     useEffect(() => {
         Animated.timing(slideAnim, {
             toValue: visible ? 0 : width,
-            duration: 250,
+            duration: 350,
             useNativeDriver: true,
         }).start();
     }, [visible]);
@@ -39,7 +39,10 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
             )}
 
             <Animated.View
-                style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}
+                style={[
+                    styles.sideMenu,
+                    { transform: [{ translateX: slideAnim }] }
+                ]}
             >
                 <TouchableOpacity onPress={() => setVisible(false)} style={{ marginTop: 60 }}>
                     <X size={32} strokeWidth={2.5} color="#000" />
@@ -59,12 +62,10 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
                         <Footprints size={28} color="#000" />
                         <Text style={styles.menuText}>Steps</Text>
                     </Pressable>
-
                     <Pressable style={styles.menuOption} onPress={() => handleNavigate("goals")}>
                         <Goal size={28} color="#000" />
                         <Text style={styles.menuText}>Goal</Text>
                     </Pressable>
-
                     <Pressable style={styles.menuOption} onPress={() => handleNavigate("statistics")}>
                         <ChartBarBigIcon size={28} color="#000" />
                         <Text style={styles.menuText}>Statistics</Text>
@@ -80,12 +81,11 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
     );
 }
 
-
 const styles = StyleSheet.create({
     backdrop: {
         position: "absolute",
         top: 0,
-        left: -100,
+        left: 0,
         width: "100%",
         height: "100%",
         backgroundColor: "#00000088",
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 8,
-        zIndex: 30
+        zIndex: 30,
     },
     defaultUserIcon: {
         width: 50,
