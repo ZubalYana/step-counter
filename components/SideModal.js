@@ -12,7 +12,7 @@ import {
 
 const { width } = Dimensions.get("window");
 
-export default function SideModal({ visible, setVisible, setCurrentPage }) {
+export default function SideModal({ visible, setVisible, setCurrentPage, currentPage }) {
     const slideAnim = useRef(new Animated.Value(width)).current;
 
     useEffect(() => {
@@ -28,6 +28,16 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
         setVisible(false);
     };
 
+    const getMenuStyle = (page) => [
+        styles.menuOption,
+        currentPage === page && { backgroundColor: "#228be6" }
+    ];
+
+    const getTextStyle = (page) => [
+        styles.menuText,
+        currentPage === page && { color: "#fff", fontWeight: "700" }
+    ];
+
     return (
         <>
             {visible && (
@@ -38,12 +48,7 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
                 />
             )}
 
-            <Animated.View
-                style={[
-                    styles.sideMenu,
-                    { transform: [{ translateX: slideAnim }] }
-                ]}
-            >
+            <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
                 <TouchableOpacity onPress={() => setVisible(false)} style={{ marginTop: 60 }}>
                     <X size={32} strokeWidth={2.5} color="#000" />
                 </TouchableOpacity>
@@ -58,17 +63,19 @@ export default function SideModal({ visible, setVisible, setCurrentPage }) {
                 </View>
 
                 <View style={{ marginTop: 30 }}>
-                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("steps")}>
-                        <Footprints size={28} color="#000" />
-                        <Text style={styles.menuText}>Steps</Text>
+                    <Pressable style={getMenuStyle("steps")} onPress={() => handleNavigate("steps")}>
+                        <Footprints size={28} color={currentPage === "steps" ? "#fff" : "#000"} />
+                        <Text style={getTextStyle("steps")}>Steps</Text>
                     </Pressable>
-                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("goals")}>
-                        <Goal size={28} color="#000" />
-                        <Text style={styles.menuText}>Goal</Text>
+
+                    <Pressable style={getMenuStyle("goals")} onPress={() => handleNavigate("goals")}>
+                        <Goal size={28} color={currentPage === "goals" ? "#fff" : "#000"} />
+                        <Text style={getTextStyle("goals")}>Goal</Text>
                     </Pressable>
-                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("statistics")}>
-                        <ChartBarBigIcon size={28} color="#000" />
-                        <Text style={styles.menuText}>Statistics</Text>
+
+                    <Pressable style={getMenuStyle("statistics")} onPress={() => handleNavigate("statistics")}>
+                        <ChartBarBigIcon size={28} color={currentPage === "statistics" ? "#fff" : "#000"} />
+                        <Text style={getTextStyle("statistics")}>Statistics</Text>
                     </Pressable>
                 </View>
 

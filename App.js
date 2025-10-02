@@ -8,7 +8,7 @@ import StatisticsPage from "./components/StatisticsPage";
 
 export default function App() {
   const [visible, setVisible] = useState(false);
-  const [currentPage, setCurrentPage] = useState("steps"); // default page
+  const [currentPage, setCurrentPage] = useState("steps");
 
   const renderPage = () => {
     switch (currentPage) {
@@ -25,17 +25,15 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {/* header with burger button */}
       <Header setVisible={setVisible} />
 
-      {/* active page */}
       <View style={styles.page}>{renderPage()}</View>
 
-      {/* side menu */}
       <SideModal
         visible={visible}
         setVisible={setVisible}
-        setCurrentPage={setCurrentPage} // pass page switcher
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
       />
     </View>
   );
@@ -43,5 +41,5 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  page: { flex: 1, marginTop: 100 }, // leave space for header
+  page: { flex: 1, marginTop: 100 },
 });
