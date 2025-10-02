@@ -4,7 +4,6 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Pressable,
     Animated,
     Dimensions,
 } from "react-native";
@@ -12,9 +11,7 @@ import { Pedometer } from "expo-sensors";
 import Svg, { Circle } from "react-native-svg";
 import { Pause, Play } from "lucide-react-native";
 import Logo from "./Logo";
-import SideModal from "./SideModal";
-
-const { width } = Dimensions.get("window");
+import Header from "./Header";
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
@@ -23,10 +20,6 @@ export default function StepCounter() {
     const [isPaused, setIsPaused] = useState(false);
     const [subscription, setSubscription] = useState(null);
     const [accumulatedSteps, setAccumulatedSteps] = useState(0);
-
-    // modal state
-    const [visible, setVisible] = useState(false);
-    const slideAnim = useRef(new Animated.Value(width)).current;
 
     useEffect(() => {
         Pedometer.isAvailableAsync()
@@ -61,15 +54,7 @@ export default function StepCounter() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Logo />
-                <TouchableOpacity style={styles.burger} onPress={() => setVisible(true)}>
-                    <View style={styles.row}></View>
-                    <View style={styles.row}></View>
-                    <View style={styles.row}></View>
-                </TouchableOpacity>
-            </View>
-
+            <Header />
             <View style={styles.counterContainer}>
                 <Svg width={radius * 2} height={radius * 2}>
                     <Circle
@@ -125,7 +110,6 @@ export default function StepCounter() {
                 </Text>
             </TouchableOpacity>
 
-            <SideModal visible={visible} setVisible={setVisible} />
         </View>
     );
 }
@@ -136,18 +120,6 @@ const styles = StyleSheet.create({
     currentStepsAmount: { fontSize: 64, fontWeight: "bold", color: "#333" },
     counterContainer: { position: "relative", justifyContent: "center", alignItems: "center" },
     centerText: { position: "absolute", alignItems: "center" },
-    burger: { width: 30, height: 22, flexDirection: "column", justifyContent: "space-between" },
-    row: { width: "100%", height: 3.5, backgroundColor: "#228be6", borderRadius: 2 },
-    header: {
-        width: "100%",
-        height: 30,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-        position: "absolute",
-        top: 70,
-        paddingHorizontal: 20,
-    },
     pauseBtn: {
         width: 160,
         height: 60,
