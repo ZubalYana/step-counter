@@ -12,7 +12,7 @@ import {
 
 const { width } = Dimensions.get("window");
 
-export default function SideModal({ visible, setVisible }) {
+export default function SideModal({ visible, setVisible, setCurrentPage }) {
     const slideAnim = useRef(new Animated.Value(width)).current;
 
     useEffect(() => {
@@ -23,6 +23,10 @@ export default function SideModal({ visible, setVisible }) {
         }).start();
     }, [visible]);
 
+    const handleNavigate = (page) => {
+        setCurrentPage(page);
+        setVisible(false);
+    };
 
     return (
         <>
@@ -37,18 +41,13 @@ export default function SideModal({ visible, setVisible }) {
             <Animated.View
                 style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}
             >
-                <TouchableOpacity
-                    onPress={() => setVisible(false)}
-                    style={{ marginTop: 60 }}
-                >
+                <TouchableOpacity onPress={() => setVisible(false)} style={{ marginTop: 60 }}>
                     <X size={32} strokeWidth={2.5} color="#000" />
                 </TouchableOpacity>
 
                 <View style={{ flexDirection: "row", alignItems: "center", marginTop: 30 }}>
                     <View style={styles.defaultUserIcon}>
-                        <Text style={{ color: "#fff", fontSize: 28, fontWeight: "700" }}>
-                            U
-                        </Text>
+                        <Text style={{ color: "#fff", fontSize: 28, fontWeight: "700" }}>U</Text>
                     </View>
                     <Text style={{ color: "#000", fontSize: 24, fontWeight: "bold", marginLeft: 14 }}>
                         Username
@@ -56,15 +55,17 @@ export default function SideModal({ visible, setVisible }) {
                 </View>
 
                 <View style={{ marginTop: 30 }}>
-                    <Pressable style={styles.menuOption}>
+                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("steps")}>
                         <Footprints size={28} color="#000" />
                         <Text style={styles.menuText}>Steps</Text>
                     </Pressable>
-                    <Pressable style={styles.menuOption}>
+
+                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("goals")}>
                         <Goal size={28} color="#000" />
                         <Text style={styles.menuText}>Goal</Text>
                     </Pressable>
-                    <Pressable style={styles.menuOption}>
+
+                    <Pressable style={styles.menuOption} onPress={() => handleNavigate("statistics")}>
                         <ChartBarBigIcon size={28} color="#000" />
                         <Text style={styles.menuText}>Statistics</Text>
                     </Pressable>
@@ -78,6 +79,7 @@ export default function SideModal({ visible, setVisible }) {
         </>
     );
 }
+
 
 const styles = StyleSheet.create({
     backdrop: {
