@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
-    Animated,
-    Dimensions,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pedometer } from "expo-sensors";
 import Svg, { Circle } from "react-native-svg";
 import { Pause, Play } from "lucide-react-native";
@@ -18,6 +17,20 @@ export default function StepCounter() {
     const [isPaused, setIsPaused] = useState(false);
     const [subscription, setSubscription] = useState(null);
     const [accumulatedSteps, setAccumulatedSteps] = useState(0);
+
+    useEffect(() => {
+        const loadGoal = async () => {
+            try {
+                const storedGoal = await AsyncStorage.getItem("dailyGoal");
+                if (storedGoal !== null) {
+                    setGoal(parseInt(storedGoal));
+                }
+            } catch (e) {
+                console.log("Error loading goal", e);
+            }
+        };
+        loadGoal();
+    }, []);
 
     useEffect(() => {
         Pedometer.isAvailableAsync()
@@ -106,14 +119,12 @@ export default function StepCounter() {
                     {isPaused ? "RESUME" : "PAUSE"}
                 </Text>
             </TouchableOpacity>
-
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 0 },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+    container: { flex: 1, alignItems: "center", justifyContent: "center" },
     currentStepsAmount: { fontSize: 64, fontWeight: "bold", color: "#333" },
     counterContainer: { position: "relative", justifyContent: "center", alignItems: "center" },
     centerText: { position: "absolute", alignItems: "center" },

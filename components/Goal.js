@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -7,16 +7,38 @@ import {
     TextInput,
     Modal,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { X } from "lucide-react-native";
 
 export default function GoalsPage() {
     const [goal, setGoal] = useState(10000);
     const [tempGoal, setTempGoal] = useState(goal.toString());
     const [modalVisible, setModalVisible] = useState(false);
 
-    const handleSaveGoal = () => {
+    useEffect(() => {
+        const loadGoal = async () => {
+            try {
+                const storedGoal = await AsyncStorage.getItem("dailyGoal");
+                if (storedGoal !== null) {
+                    setGoal(parseInt(storedGoal));
+                    setTempGoal(storedGoal);
+                }
+            } catch (e) {
+                console.log("Error loading goal", e);
+            }
+        };
+        loadGoal();
+    }, []);
+
+    const handleSaveGoal = async () => {
         const numericGoal = parseInt(tempGoal);
         if (!isNaN(numericGoal) && numericGoal > 0) {
-            setGoal(numericGoal);
+            try {
+                await AsyncStorage.setItem("dailyGoal", numericGoal.toString());
+                setGoal(numericGoal);
+            } catch (e) {
+                console.log("Error saving goal", e);
+            }
         }
         setModalVisible(false);
     };
@@ -56,7 +78,7 @@ export default function GoalsPage() {
                             style={styles.cancelButton}
                             onPress={() => setModalVisible(false)}
                         >
-                            <Text style={styles.cancelText}>Cancel</Text>
+                            <X style={styles.closeBtn} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -112,6 +134,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 20,
         alignItems: "center",
+        position: 'relative',
     },
     modalTitle: {
         fontSize: 22,
@@ -129,7 +152,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     saveButton: {
-        backgroundColor: "#4CAF50",
+        backgroundColor: "#4dabf7",
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -140,10 +163,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     cancelButton: {
-        paddingVertical: 8,
-    },
-    cancelText: {
-        fontSize: 16,
-        color: "red",
+        position: 'absolute',
+        top: 15,
+        right: 15
     },
 });
