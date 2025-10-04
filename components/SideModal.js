@@ -9,6 +9,16 @@ import {
     Animated,
     Dimensions,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const clearStorage = async () => {
+    try {
+        await AsyncStorage.clear();
+        console.log("Storage cleared!");
+    } catch (e) {
+        console.error("Failed to clear storage.", e);
+    }
+};
 
 const { width } = Dimensions.get("window");
 
@@ -79,7 +89,7 @@ export default function SideModal({ visible, setVisible, setCurrentPage, current
                     </Pressable>
                 </View>
 
-                <Pressable style={[styles.menuOption, styles.logout]}>
+                <Pressable style={[styles.menuOption, styles.logout]} onPress={clearStorage}>
                     <LogOut size={28} color="#000" />
                     <Text style={styles.menuText}>Вийти</Text>
                 </Pressable>
