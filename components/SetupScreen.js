@@ -33,12 +33,42 @@ export default function SetupScreen({ onFinish }) {
                 Let’s set up your profile for better tracking.
             </Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Sex (M/F)"
-                value={sex}
-                onChangeText={setSex}
-            />
+            <View style={styles.row}>
+                <TouchableOpacity
+                    style={[
+                        styles.option,
+                        sex === "M" && styles.optionSelected,
+                    ]}
+                    onPress={() => setSex("M")}
+                >
+                    <Text
+                        style={[
+                            styles.optionText,
+                            sex === "M" && styles.optionTextSelected,
+                        ]}
+                    >
+                        Male
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[
+                        styles.option,
+                        sex === "F" && styles.optionSelected,
+                    ]}
+                    onPress={() => setSex("F")}
+                >
+                    <Text
+                        style={[
+                            styles.optionText,
+                            sex === "F" && styles.optionTextSelected,
+                        ]}
+                    >
+                        Female
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
             <TextInput
                 style={styles.input}
                 placeholder="Age"
@@ -69,8 +99,8 @@ export default function SetupScreen({ onFinish }) {
             />
 
             <Text style={styles.advice}>
-                💡 Tip: Beginners usually start with 5,000–8,000 steps a day, while 10,000
-                is a solid goal for general health.
+                💡 Tip: Beginners usually start with 5,000–8,000 steps a day, while
+                10,000 is a solid goal for general health.
             </Text>
 
             <TouchableOpacity style={styles.button} onPress={handleSave}>
@@ -86,10 +116,39 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
-        backgroundColor: '#fff'
+        backgroundColor: "#fff",
     },
     title: { fontSize: 28, fontWeight: "bold", marginBottom: 10 },
-    subtitle: { fontSize: 16, color: "#666", marginBottom: 20 },
+    subtitle: { fontSize: 16, color: "#666", marginBottom: 20, textAlign: "center" },
+    label: { fontSize: 16, fontWeight: "600", marginBottom: 8, alignSelf: "flex-start" },
+    row: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        marginBottom: 15,
+    },
+    option: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 10,
+        paddingVertical: 15,
+        marginHorizontal: 5,
+        alignItems: "center",
+    },
+    optionSelected: {
+        backgroundColor: "#4dabf7",
+        borderColor: "#4dabf7",
+    },
+    optionText: {
+        fontSize: 16,
+        color: "#333",
+        fontWeight: "500",
+    },
+    optionTextSelected: {
+        color: "#fff",
+        fontWeight: "700",
+    },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
