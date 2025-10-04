@@ -20,11 +20,13 @@ export default function SetupScreen({ onFinish }) {
         const userData = { sex, age, height, weight, goal };
         try {
             await AsyncStorage.setItem("userProfile", JSON.stringify(userData));
+            await AsyncStorage.setItem("dailyGoal", goal.toString());
             onFinish();
         } catch (e) {
             console.log("Error saving profile", e);
         }
     };
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>

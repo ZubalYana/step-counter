@@ -12,38 +12,37 @@ import { Pause, Play } from "lucide-react-native";
 
 export default function StepCounter() {
     const [steps, setSteps] = useState(0);
-    const [isAvailable, setIsAvailable] = useState(null);
-    const [goal, setGoal] = useState(200);
+    const [goal, setGoal] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [subscription, setSubscription] = useState(null);
     const [accumulatedSteps, setAccumulatedSteps] = useState(0);
 
-    useEffect(() => {
-        const loadGoal = async () => {
-            try {
-                const storedGoal = await AsyncStorage.getItem("dailyGoal");
-                if (storedGoal !== null) {
-                    setGoal(parseInt(storedGoal));
-                }
-            } catch (e) {
-                console.log("Error loading goal", e);
-            }
-        };
-        loadGoal();
-    }, []);
+    const [weight, setWeight] = useState(70);
+    const [height, setHeight] = useState(170);
+    const [startTime, setStartTime] = useState(Date.now());
 
     useEffect(() => {
-        Pedometer.isAvailableAsync()
-            .then((result) =>
-                setIsAvailable(
-                    result ? "Steps sensor available ✅" : "Steps sensor unavailable ❌"
-                )
-            )
-            .catch(() => setIsAvailable("Помилка ❌"));
+        const loadGoalAndProfile = async () => {
+            try {
+                const storedGoal = await AsyncStorage.getItem("dailyGoal");
+                if (storedGoal !== null) setGoal(parseInt(storedGoal));
+
+                const userProfile = await AsyncStorage.getItem("userProfile");
+                if (userProfile) {
+                    const { weight: w, height: h } = JSON.parse(userProfile);
+                    if (w) setWeight(parseFloat(w));
+                    if (h) setHeight(parseFloat(h));
+                }
+            } catch (e) {
+                console.log("Error loading data", e);
+            }
+        };
+        loadGoalAndProfile();
     }, []);
 
     useEffect(() => {
         if (!isPaused) {
+            setStartTime(Date.now());
             const sub = Pedometer.watchStepCount((result) => {
                 setSteps(accumulatedSteps + result.steps);
             });
@@ -56,6 +55,14 @@ export default function StepCounter() {
             setAccumulatedSteps(steps);
         }
     }, [isPaused]);
+
+    const stepLength = height * 0.415 / 100;
+    const distanceMeters = steps * stepLength;
+    const distanceKm = distanceMeters / 1000;
+    const calories = steps * weight * 0.0005;
+
+    const elapsedMinutes = (Date.now() - startTime) / 1000 / 60;
+    const pace = distanceKm > 0 ? (elapsedMinutes / distanceKm).toFixed(1) : 0;
 
     const radius = 140;
     const strokeWidth = 15;
@@ -108,17 +115,31 @@ export default function StepCounter() {
                 ) : (
                     <Pause color="#333" strokeWidth={1} fill="#333" />
                 )}
-                <Text
-                    style={{
-                        marginLeft: 12,
-                        color: "#333",
-                        fontSize: 22,
-                        fontWeight: "600",
-                    }}
-                >
+                <Text style={styles.pauseText}>
                     {isPaused ? "RESUME" : "PAUSE"}
                 </Text>
             </TouchableOpacity>
+
+            <View style={styles.statsBox}>
+                <View style={styles.row}>
+                    <View style={[styles.statContainer, { marginRight: 40 }]}>
+                        <Text style={styles.statHightlighted}>{calories.toFixed(0)} kcal</Text>
+                        <Text style={styles.statText}>Calories</Text>
+                    </View>
+                    <View style={styles.statContainer}>
+                        <Text style={styles.statHightlighted}>{distanceKm.toFixed(2)} km</Text>
+                        <Text style={styles.statText}>Distance</Text>
+                    </View>
+                </View>
+
+                <View style={styles.row}>
+                    <View style={styles.statContainer}>
+                        <Text style={styles.statHightlighted}>{pace} min/km</Text>
+                        <Text style={styles.statText}>Avg pace</Text>
+                    </View>
+                </View>
+            </View>
+
         </View>
     );
 }
@@ -138,4 +159,40 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginTop: 25,
     },
+    pauseText: {
+        marginLeft: 12,
+        color: "#333",
+        fontSize: 22,
+        fontWeight: "600",
+    },
+    statsBox: {
+        marginTop: 50,
+        alignItems: "center",
+    },
+    row: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginBottom: 20,
+    },
+    statContainer: {
+        flexDirection: "column",
+        alignItems: "center",
+        marginHorizontal: 20,
+    },
+    statText: {
+        fontSize: 18,
+        color: "#444",
+        marginVertical: 4,
+        fontWeight: "600",
+    },
+    statHightlighted: {
+        fontSize: 32,
+        fontWeight: "bold",
+        color: "#228be6",
+    },
+    statContainer: {
+        flexDirection: 'column',
+        display: 'flex',
+        alignItems: 'center',
+    }
 });
